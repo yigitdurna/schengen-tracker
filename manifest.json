@@ -1,0 +1,15 @@
+{
+  "name": "Schengen 90/180",
+  "short_name": "Schengen",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#4da6ff",
+  "theme_color": "#4da6ff",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
