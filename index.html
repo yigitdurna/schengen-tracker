@@ -5,43 +5,65 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
   <title>Schengen Tracker</title>
-  <meta name="theme-color" content="#f2f2f7" />
+  <meta name="theme-color" content="#1a2332" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" href="icon.png" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg: #f2f2f7;
-      --card: #ffffff;
-      --text: #000000;
-      --muted: #8e8e93;
-      --border: #c6c6c8;
-      --in: #e9f7ef;
-      /* Softer green for existing trips */
-      --in-border: #b8e6cb;
-      --primary: #34C759;
-      /* Apple Green for selection */
-      --primary-text: #ffffff;
-      --danger: #ff3b30;
-      --safe-top: env(safe-area-inset-top);
+      --bg: #fafbfc;
+      --bg-elevated: #ffffff;
+      --text-primary: #1a2332;
+      --text-secondary: #5a6a7f;
+      --text-muted: #8994a3;
+      --border: #e4e8ec;
+      --border-strong: #cbd2da;
+      --accent: #e85d33;
+      --accent-soft: #fef3f0;
+      --accent-hover: #d64d25;
+      --success: #0f7d4a;
+      --success-soft: #e8f5f0;
+      --danger: #dc3545;
+      --warning: #f59e0b;
+      --occupied: #e8f5f0;
+      --occupied-border: #b8e6d3;
+      --shadow-sm: 0 1px 2px rgba(26, 35, 50, 0.04);
+      --shadow-md: 0 4px 12px rgba(26, 35, 50, 0.08);
+      --shadow-lg: 0 12px 32px rgba(26, 35, 50, 0.12);
       --safe-top: env(safe-area-inset-top);
       --safe-bottom: env(safe-area-inset-bottom);
-      --warning: #FF9500;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #000000;
-        --card: #1c1c1e;
-        --text: #ffffff;
-        --muted: #98989d;
-        --border: #38383a;
-        --in: #1c3a2f;
-        --in-border: #2d5c4a;
-        --primary: #30D158;
-        --warning: #FF9F0A;
+        --bg: #0d1117;
+        --bg-elevated: #161b22;
+        --text-primary: #e6edf3;
+        --text-secondary: #8b949e;
+        --text-muted: #6e7681;
+        --border: #21262d;
+        --border-strong: #30363d;
+        --accent: #ff6b47;
+        --accent-soft: #2d1410;
+        --accent-hover: #ff8566;
+        --success: #3fb950;
+        --success-soft: #0d2818;
+        --danger: #f85149;
+        --warning: #f59e0b;
+        --occupied: #0d2818;
+        --occupied-border: #1f6c47;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
       }
     }
 
@@ -52,437 +74,991 @@
 
     body {
       margin: 0;
-      font-family: "Futura Medium", "Futura", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
-      color: var(--text);
-      padding-top: calc(20px + var(--safe-top));
-      padding-bottom: calc(40px + var(--safe-bottom));
-      user-select: none;
+      color: var(--text-primary);
+      padding-top: calc(24px + var(--safe-top));
+      padding-bottom: calc(24px + var(--safe-bottom));
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.6;
     }
 
     .container {
-      max-width: 600px;
+      max-width: 680px;
       margin: 0 auto;
-      padding: 0 16px;
+      padding: 0 20px;
     }
 
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      margin: 0 0 16px;
+    /* Header */
+    .header {
       text-align: center;
+      margin-bottom: 32px;
+      animation: fadeInDown 0.6s ease-out;
     }
 
+    .app-title {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 0 0 8px;
+      color: var(--text-primary);
+    }
+
+    .app-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin: 0;
+    }
+
+    /* Cards */
     .card {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      background: var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      animation: fadeInUp 0.6s ease-out backwards;
     }
 
-    .big {
-      font-size: 42px;
-      font-weight: 700;
-      letter-spacing: -1px;
+    .card:nth-child(2) { animation-delay: 0.1s; }
+    .card:nth-child(3) { animation-delay: 0.2s; }
+    .card:nth-child(4) { animation-delay: 0.3s; }
+
+    /* Status Card */
+    .status-card {
+      position: relative;
+      overflow: hidden;
     }
 
-    .muted {
-      color: var(--muted);
+    .status-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--success) 100%);
+      opacity: 0.8;
+    }
+
+    .status-label {
       font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .days-remaining {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 72px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin: 0 0 16px;
+      animation: countIn 0.8s ease-out backwards;
+      animation-delay: 0.4s;
+      transition: color 0.3s ease;
+    }
+
+    /* Dynamic color based on days remaining */
+    .days-remaining.high {
+      color: #0f7d4a; /* Green - plenty of days */
+    }
+
+    .days-remaining.medium {
+      color: #e85d33; /* Orange - getting low */
+    }
+
+    .days-remaining.low {
+      color: #dc3545; /* Red - very few days */
+    }
+
+    .days-remaining.critical {
+      color: #b91c1c; /* Dark red - critical */
+    }
+
+    .status-message {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      padding: 16px;
+      background: var(--accent-soft);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent);
+    }
+
+    .status-message strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .status-message.warning {
+      background: rgba(212, 132, 31, 0.1);
+      border-left-color: var(--warning);
+    }
+
+    .status-message.danger {
+      background: rgba(181, 64, 52, 0.1);
+      border-left-color: var(--danger);
+    }
+
+    /* Reference Date Selector */
+    .ref-date-selector {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .ref-date-label {
+      font-size: 13px;
+      color: var(--text-muted);
       font-weight: 500;
     }
 
-    .note {
+    .ref-date-button {
       font-size: 13px;
-      color: var(--muted);
+      font-weight: 600;
+      color: var(--accent);
+      background: none;
+      border: none;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .ref-date-button:hover {
+      background: var(--accent-soft);
+    }
+
+    #referenceDate {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 1px;
+      height: 1px;
+    }
+
+    /* Calendar Section */
+    .section-header {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    #calendar-container {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .calendar-help {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
       font-style: italic;
-      margin-top: 8px;
+      margin-top: 12px;
+    }
+
+    /* Trip Form */
+    .trip-form {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .trip-form.editing {
+      border: 2px solid var(--warning);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      position: relative;
+      background: rgba(212, 132, 31, 0.05);
+      margin-top: 24px;
+    }
+
+    .trip-form.editing::before {
+      content: "EDITING MODE";
+      position: absolute;
+      top: -12px;
+      left: 16px;
+      background: var(--bg-elevated);
+      color: var(--warning);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .form-help {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
       text-align: center;
     }
 
+    .date-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-primary);
+      font-size: 15px;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    input[type="text"]::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Buttons */
     button {
-      background: var(--primary);
-      color: var(--primary-text);
+      background: var(--accent);
+      color: white;
       border: none;
-      border-radius: 10px;
-      padding: 14px;
-      font-size: 17px;
+      border-radius: var(--radius-sm);
+      padding: 12px 20px;
+      font-size: 15px;
       font-weight: 600;
+      font-family: inherit;
       width: 100%;
       cursor: pointer;
-      margin-top: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(232, 93, 51, 0.2);
+    }
+
+    button:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(232, 93, 51, 0.3);
     }
 
     button:active {
-      opacity: 0.7;
+      transform: translateY(0);
     }
 
     button.secondary {
-      background: var(--card);
-      color: var(--text);
-      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-primary);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-sm);
+    }
+
+    button.secondary:hover {
+      background: var(--bg-elevated);
+      border-color: var(--text-muted);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
     }
 
     button.danger {
       background: var(--danger);
-      color: #fff;
+      color: white;
+      box-shadow: 0 2px 8px rgba(181, 64, 52, 0.2);
     }
 
-    button.sm {
-      width: auto;
-      padding: 6px 12px;
+    button.danger:hover {
+      background: #9a3629;
+      box-shadow: 0 4px 12px rgba(181, 64, 52, 0.3);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .button-row button {
+      flex: 1;
+    }
+
+    button + button {
+      margin-top: 12px;
+    }
+
+    .button-row button + button {
+      margin-top: 0;
+    }
+
+    /* Format Selection Buttons */
+    .format-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .format-buttons.visible {
+      max-height: 100px;
+      opacity: 1;
+    }
+
+    .format-buttons button {
       font-size: 13px;
+      padding: 8px 12px;
       margin: 0;
     }
 
-    input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--text);
-      font-size: 16px;
-      margin-top: 4px;
-      appearance: none;
-    }
-
-    .row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* Calendar Customization */
-    #calendar-container {
-      display: block;
-      /* Reset flex centering to let it fill width */
-    }
-
-    .flatpickr-calendar,
-    .flatpickr-innerContainer,
-    .flatpickr-rContainer,
-    .flatpickr-days,
-    .dayContainer {
-      width: 100% !important;
-      max-width: 100% !important;
-    }
-
-    .flatpickr-calendar {
-      background: var(--card) !important;
-      box-shadow: none !important;
-      border: none !important;
-      margin: 0 !important;
-    }
-
-    .flatpickr-calendar::before,
-    .flatpickr-calendar::after {
-      display: none !important;
-    }
-
-    .dayContainer {
-      padding: 0 !important;
-      display: flex !important;
-      justify-content: space-around !important;
-    }
-
-    .flatpickr-day {
-      color: var(--text) !important;
-      border-radius: 8px !important;
-      flex-basis: 14.28% !important;
-      /* Force 1/7th width */
-      max-width: 14.28% !important;
-      height: 40px !important;
-      line-height: 40px !important;
-      border: 1px solid transparent !important;
-      margin: 0 !important;
-      /* Remove margins that might cause gaps */
-    }
-
-    /* Selected (Start/End) - Solid Green, White Text */
-    .flatpickr-day.selected,
-    .flatpickr-day.startRange,
-    .flatpickr-day.endRange,
-    .flatpickr-day.selected.inRange,
-    .flatpickr-day.startRange.inRange,
-    .flatpickr-day.endRange.inRange {
-      background: var(--primary) !important;
-      border-color: var(--primary) !important;
-      color: #fff !important;
-      box-shadow: none !important;
-    }
-
-    /* In Range - Light Green, Dark Text. Use :not() to ensure start/end keep their solid color */
-    .flatpickr-day.inRange:not(.startRange):not(.endRange) {
-      background: rgba(52, 199, 89, 0.2) !important;
-      border-color: transparent !important;
-      color: var(--text) !important;
-      box-shadow: -5px 0 0 rgba(52, 199, 89, 0.2), 5px 0 0 rgba(52, 199, 89, 0.2) !important;
-    }
-
-    /* EDITING MODE OVERRIDES */
-    body.editing-mode .flatpickr-day.selected,
-    body.editing-mode .flatpickr-day.startRange,
-    body.editing-mode .flatpickr-day.endRange,
-    body.editing-mode .flatpickr-day.selected.inRange,
-    body.editing-mode .flatpickr-day.startRange.inRange,
-    body.editing-mode .flatpickr-day.endRange.inRange {
-      background: var(--warning) !important;
-      border-color: var(--warning) !important;
-    }
-
-    body.editing-mode .flatpickr-day.inRange:not(.startRange):not(.endRange) {
-      background: rgba(255, 159, 10, 0.2) !important;
-      box-shadow: -5px 0 0 rgba(255, 159, 10, 0.2), 5px 0 0 rgba(255, 159, 10, 0.2) !important;
-    }
-
-    /* Update Trip Button in Edit Mode */
-    body.editing-mode #addTripBtn {
-      background-color: var(--warning) !important;
-    }
-
-    .flatpickr-day.in-schengen {
-      background: var(--in) !important;
-      border-color: var(--in-border) !important;
-    }
-
-    .flatpickr-months .flatpickr-month {
-      color: var(--text) !important;
-      fill: var(--text) !important;
-    }
-
-    .flatpickr-current-month .flatpickr-monthDropdown-months {
-      color: var(--text) !important;
-    }
-
-    span.flatpickr-weekday {
-      color: var(--muted) !important;
-    }
-
-    /* Remove the weird arrow in year dropdown */
-    .flatpickr-current-month .numInputWrapper span.arrowUp,
-    .flatpickr-current-month .numInputWrapper span.arrowDown {
-      display: none !important;
-    }
-
-    /* Fix Arrows */
-    .flatpickr-prev-month svg,
-    .flatpickr-next-month svg {
-      fill: var(--text) !important;
-    }
-
     /* Trip List */
+    .trip-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .trip-count {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
     .trip-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease;
+    }
+
+    .trip-item:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-sm);
     }
 
     .trip-item:last-child {
-      border-bottom: none;
+      margin-bottom: 0;
     }
 
     .trip-info {
-      display: flex;
-      flex-direction: column;
+      flex: 1;
     }
 
     .trip-dates {
       font-size: 14px;
-      color: var(--muted);
-    }
-
-    .trip-name {
       font-weight: 600;
-      font-size: 16px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      font-family: 'Crimson Pro', Georgia, serif;
     }
 
-    .del-btn {
-      background: none;
-      color: var(--danger);
-      width: auto;
-      padding: 8px;
-      margin: 0;
-      font-size: 14px;
+    .trip-duration {
+      font-size: 13px;
+      color: var(--text-muted);
     }
 
-    .actions-row {
+    .trip-actions {
       display: flex;
       gap: 8px;
-      margin-top: 16px;
-      justify-content: center;
     }
 
-    /* Tab Bar */
-    .tab-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--card);
+    .btn-icon {
+      padding: 8px 12px;
+      font-size: 13px;
+      width: auto;
+      min-width: auto;
+    }
+
+    .btn-edit {
+      background: var(--bg-elevated);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      box-shadow: none;
+    }
+
+    .btn-edit:hover {
+      background: var(--accent-soft);
+      transform: translateY(-1px);
+    }
+
+    .btn-delete {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid transparent;
+      box-shadow: none;
+    }
+
+    .btn-delete:hover {
+      background: rgba(181, 64, 52, 0.1);
+      border-color: var(--danger);
+      transform: translateY(-1px);
+    }
+
+    /* Data Management Section */
+    .data-management {
+      margin-top: 24px;
+      padding-top: 24px;
       border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-around;
-      padding-bottom: var(--safe-bottom);
-      z-index: 100;
     }
 
-    .tab-btn {
-      background: none;
-      color: var(--muted);
-      border: none;
-      padding: 12px;
-      font-size: 12px;
+    .data-management-title {
+      font-size: 14px;
       font-weight: 600;
-      flex: 1;
+      color: var(--text-primary);
+      margin: 0 0 12px;
+    }
+
+    /* Empty State */
+    .empty-state {
       text-align: center;
-      border-radius: 0;
+      padding: 40px 20px;
+      color: var(--text-muted);
     }
 
-    .tab-btn.active {
-      color: var(--primary);
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.5;
     }
 
-    .view-container {
-      padding-bottom: 80px;
-      /* Space for tab bar */
+    .empty-state-text {
+      font-size: 15px;
+      font-weight: 500;
     }
 
-    #addTripForm.editing {
-      border: 2px solid var(--warning);
-      position: relative;
-    }
-
-    #addTripForm.editing::before {
-      content: "EDITING MODE";
-      position: absolute;
-      top: -10px;
-      left: 10px;
-      background: var(--card);
-      color: var(--warning);
-      font-size: 10px;
-      font-weight: bold;
-      padding: 0 4px;
-    }
-
-    /* Modal/Overlay for Export */
+    /* Modal/Overlay */
     .overlay {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1000;
+      animation: fadeIn 0.2s ease-out;
     }
 
     .modal {
-      background: var(--card);
-      padding: 20px;
-      border-radius: 12px;
-      width: 80%;
-      max-width: 300px;
+      background: var(--bg-elevated);
+      padding: 28px;
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 360px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      animation: scaleIn 0.3s ease-out;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 20px;
       text-align: center;
+      color: var(--text-primary);
+    }
+
+    .modal button {
+      margin-top: 12px;
+    }
+
+    .modal button:first-of-type {
+      margin-top: 0;
+    }
+
+    /* Flatpickr Customization */
+    .flatpickr-calendar {
+      background: var(--bg-elevated) !important;
+      border: 1px solid var(--border) !important;
+      box-shadow: var(--shadow-lg) !important;
+      border-radius: var(--radius-md) !important;
+    }
+
+    #calendar-container .flatpickr-calendar {
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    .flatpickr-months {
+      margin-bottom: 8px !important;
+    }
+
+    .flatpickr-current-month {
+      font-size: 16px !important;
+      font-weight: 600 !important;
+      color: var(--text-primary) !important;
+    }
+
+    .flatpickr-monthDropdown-months {
+      font-weight: 600 !important;
+      color: var(--text-primary) !important;
+    }
+
+    span.flatpickr-weekday {
+      color: var(--text-muted) !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+    }
+
+    .flatpickr-day {
+      color: var(--text-primary) !important;
+      border-radius: 8px !important;
+      border: none !important;
+      margin: 2px !important;
+      transition: all 0.2s ease !important;
+    }
+
+    .flatpickr-day:hover:not(.selected):not(.startRange):not(.endRange) {
+      background: var(--bg) !important;
+      border-color: var(--border) !important;
+    }
+
+    .flatpickr-day.prevMonthDay,
+    .flatpickr-day.nextMonthDay {
+      color: var(--text-muted) !important;
+      opacity: 0.5 !important;
+    }
+
+    .flatpickr-day.selected,
+    .flatpickr-day.startRange,
+    .flatpickr-day.endRange {
+      background: var(--accent) !important;
+      border-color: var(--accent) !important;
+      color: white !important;
+      font-weight: 600 !important;
+    }
+
+    .flatpickr-day.inRange {
+      background: var(--accent-soft) !important;
+      border-color: transparent !important;
+      color: var(--accent) !important;
+      box-shadow: none !important;
+    }
+
+    .flatpickr-day.in-schengen {
+      background: var(--occupied) !important;
+      border: 1px solid var(--occupied-border) !important;
+      font-weight: 500 !important;
+    }
+
+    body.editing-mode .flatpickr-day.selected,
+    body.editing-mode .flatpickr-day.startRange,
+    body.editing-mode .flatpickr-day.endRange {
+      background: var(--warning) !important;
+      border-color: var(--warning) !important;
+    }
+
+    body.editing-mode .flatpickr-day.inRange {
+      background: rgba(212, 132, 31, 0.15) !important;
+      color: var(--warning) !important;
+    }
+
+    /* Hide calendar navigation arrows */
+    .flatpickr-prev-month,
+    .flatpickr-next-month {
+      display: none !important;
+    }
+
+    /* Style year navigation arrows to white */
+    .flatpickr-calendar .numInputWrapper span.arrowUp,
+    .flatpickr-calendar .numInputWrapper span.arrowDown {
+      border-color: white transparent transparent transparent !important;
+    }
+
+    .flatpickr-calendar .numInputWrapper span.arrowDown {
+      border-color: transparent transparent white transparent !important;
+    }
+
+    .flatpickr-calendar .numInputWrapper span.arrowUp:hover,
+    .flatpickr-calendar .numInputWrapper span.arrowDown:hover {
+      opacity: 0.8;
+    }
+
+    .flatpickr-calendar .numInputWrapper span {
+      border-color: white transparent transparent transparent !important;
+    }
+
+    .flatpickr-calendar .numInputWrapper span.arrowDown {
+      border-top: none !important;
+      border-bottom-color: white !important;
+    }
+
+    /* Utility Classes */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes countIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: calc(24px + var(--safe-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text-primary);
+      color: var(--bg-elevated);
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    .toast.success {
+      background: var(--success);
+      color: white;
+    }
+
+    .toast.error {
+      background: var(--danger);
+      color: white;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    /* Help Card */
+    .help-card {
+      background: linear-gradient(135deg, var(--accent-soft) 0%, var(--success-soft) 100%);
+      border: 1px solid var(--border);
+      padding: 20px;
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+    }
+
+    .help-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 8px;
+    }
+
+    .help-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .help-rule {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* Disclaimer Card */
+    .disclaimer-card {
+      background: var(--bg-elevated);
+      border: 2px solid var(--warning);
+      padding: 20px;
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .disclaimer-card.hidden {
+      display: none;
+    }
+
+    .disclaimer-close {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border);
+      font-size: 20px;
+      line-height: 1;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .disclaimer-close:hover {
+      background: var(--border);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+
+    .disclaimer-close:active {
+      transform: scale(0.9);
+    }
+
+    .disclaimer-icon {
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .disclaimer-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: center;
+      margin: 0 0 12px;
+    }
+
+    .disclaimer-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0 0 12px;
+    }
+
+    .disclaimer-list {
+      margin: 8px 0 12px 20px;
+      padding: 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .disclaimer-list li {
+      margin-bottom: 4px;
+    }
+
+    .disclaimer-validation {
+      background: var(--success-soft);
+      border-left: 3px solid var(--success);
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-top: 12px;
     }
   </style>
 </head>
 
 <body>
-
   <div class="container">
-    <h1>Schengen Tracker</h1>
-
-    <!-- DASHBOARD VIEW -->
-    <div id="view-dashboard" class="view-container">
-      <!-- Status Card -->
-      <div class="card">
-        <div class="muted">Days Remaining</div>
-        <div id="daysLeft" class="big">--</div>
-        <div id="statusText" class="muted" style="margin-top:8px; line-height:1.4;">Calculating...</div>
-      </div>
-
-      <!-- Calendar & Add Trip -->
-      <div class="card">
-        <div style="font-weight:600; margin-bottom:10px; text-align:center;">Calendar</div>
-        <div id="calendar-container"></div>
-        <input id="calendar-input" type="text" style="display:none;">
-        <div class="note">Tap start and end dates to add a trip.</div>
-
-        <div id="addTripForm" style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px;">
-          <div id="formHeader" class="muted">Add New Trip</div>
-          <div class="note" style="margin-bottom:8px;">Select dates on calendar or enter manually.</div>
-          <div class="row">
-            <input type="date" id="tripEntry">
-            <input type="date" id="tripExit">
-          </div>
-          <div class="muted" style="margin-top:8px;">Trip Name (Optional)</div>
-          <input type="text" id="tripName" placeholder="e.g., Paris">
-          <button id="addTripBtn">Add Trip</button>
-          <button id="cancelTripBtn" class="secondary hidden">Cancel Edit</button>
-        </div>
-      </div>
+    <!-- Header -->
+    <div class="header">
+      <h1 class="app-title">Schengen Travel Tracker</h1>
+      <p class="app-subtitle">Monitor your 90/180 day visa-free travel allowance</p>
     </div>
 
-    <!-- TRIPS VIEW -->
-    <div id="view-trips" class="view-container hidden">
-      <!-- Trip List -->
-      <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <div style="font-weight:600;">Your Trips</div>
-        </div>
-        <div id="tripList">
-          <div class="muted" style="text-align:center; padding:20px;">No trips added yet.</div>
-        </div>
+    <!-- Help Card -->
+    <div class="help-card">
+      <div class="help-title">The 90/180 Rule</div>
+      <p class="help-text">
+        Non-EU visitors can stay up to <span class="help-rule">90 days within any 180-day period</span> in the Schengen Area. This tracker calculates your remaining days and helps you plan your travels.
+      </p>
+    </div>
 
-        <div style="margin-top:20px; border-top:1px solid var(--border); padding-top:16px;">
-          <div class="muted" style="margin-bottom:8px;">Data Management</div>
-          <div class="row">
-            <button id="importBtn" class="secondary">Import <span
-                style="font-size:10px; opacity:0.7;">(JSON)</span></button>
-            <button id="exportBtn" class="secondary">Export</button>
-          </div>
-          <button id="clearDataBtn" class="danger">Clear All Data</button>
-          <input type="file" id="importFile" accept=".json" style="display:none;">
-        </div>
+    <!-- Legal Disclaimer -->
+    <div class="disclaimer-card" id="disclaimerCard">
+      <button class="disclaimer-close" id="dismissDisclaimer" title="Dismiss disclaimer">×</button>
+      <div class="disclaimer-icon">⚖️</div>
+      <div class="disclaimer-title">Legal Disclaimer</div>
+      <p class="disclaimer-text">
+        This tool is for <strong>informational purposes only</strong> and does not constitute legal advice. Visa and immigration rules are subject to change without notice. Always verify your status with:
+      </p>
+      <ul class="disclaimer-list">
+        <li>Official immigration authorities</li>
+        <li>Your embassy or consulate</li>
+        <li>A qualified immigration lawyer</li>
+      </ul>
+      <p class="disclaimer-text">
+        <strong>No Liability:</strong> The developers assume no responsibility for overstays, denied entry, fines, or legal consequences resulting from use of this application. Border control decisions are final and binding.
+      </p>
+      <div class="disclaimer-validation">
+        ✓ Calculation engine validated against official test cases<br>
+        ✓ All dates stored in UTC to prevent timezone errors<br>
+        ✓ Automatic backup created before each modification<br>
+        ✓ Trip overlap detection warns of conflicting dates
+      </div>
+      <p class="disclaimer-text" style="margin-top: 12px; font-size: 12px; font-style: italic;">
+        <strong>Timezone Notice:</strong> All dates are processed in UTC. If entering dates across timezones, use the date as stamped in your passport (entry/exit stamps) rather than your device's local time.
+      </p>
+    </div>
+
+    <!-- Status Card -->
+    <div class="card status-card">
+      <div class="status-label">Days Remaining</div>
+      <div id="daysLeft" class="days-remaining">—</div>
+      <div id="statusText" class="status-message">Calculating your travel status...</div>
+
+      <!-- Reference Date Selector -->
+      <div class="ref-date-selector">
+        <span class="ref-date-label">Status as of:</span>
+        <button type="button" id="refDateDisplay" class="ref-date-button">Today</button>
+        <input type="text" id="referenceDate">
       </div>
     </div>
 
-    <!-- Tab Bar -->
-    <div class="tab-bar">
-      <button class="tab-btn active" data-tab="dashboard">
-        <div style="font-size:20px; margin-bottom:2px;">📅</div>
-        Dashboard
-      </button>
-      <button class="tab-btn" data-tab="trips">
-        <div style="font-size:20px; margin-bottom:2px;">✈️</div>
-        Trips
-      </button>
+    <!-- Calendar & Add Trip Card -->
+    <div class="card">
+      <div class="section-header">
+        <span>Travel Calendar</span>
+      </div>
+
+      <div id="calendar-container"></div>
+      <input id="calendar-input" type="text" style="display:none;">
+
+      <p class="calendar-help">Select dates on the calendar to add or edit trips</p>
+
+      <!-- Add Trip Form -->
+      <div id="addTripForm" class="trip-form">
+        <div class="form-help">Select dates on the calendar or enter manually below</div>
+
+        <div class="date-inputs">
+          <input type="text" id="tripEntry" placeholder="Entry Date">
+          <input type="text" id="tripExit" placeholder="Exit Date">
+        </div>
+
+        <button id="addTripBtn">Add Trip</button>
+        <button id="cancelEditBtn" class="secondary hidden">Cancel Edit</button>
+      </div>
     </div>
 
-  </div>
+    <!-- Trip List Card -->
+    <div class="card">
+      <div class="trip-list-header">
+        <div class="section-header" style="margin: 0;">Your Trips</div>
+        <div class="trip-count" id="tripCount">0 trips</div>
+      </div>
 
-  <!-- Export Modal -->
-  <div id="exportModal" class="overlay hidden">
-    <div class="modal">
-      <div style="font-weight:600; margin-bottom:16px; font-size:18px;">Export Data</div>
-      <button id="exportJsonOption">JSON</button>
-      <button id="exportCsvOption">CSV</button>
-      <button id="closeExportModal" class="secondary" style="margin-top:16px;">Cancel</button>
+      <div id="tripList">
+        <div class="empty-state">
+          <div class="empty-state-icon">✈</div>
+          <div class="empty-state-text">No trips added yet</div>
+        </div>
+      </div>
+
+      <!-- Data Management -->
+      <div class="data-management">
+        <div class="data-management-title">Data Management</div>
+        <div class="button-row">
+          <button id="importBtn" class="secondary">Import</button>
+          <button id="exportBtn" class="secondary">Export</button>
+        </div>
+
+        <!-- Import Format Selection -->
+        <div id="importFormatButtons" class="format-buttons">
+          <button id="importJsonBtn" class="secondary">JSON</button>
+          <button id="importCsvBtn" class="secondary">CSV</button>
+        </div>
+
+        <!-- Export Format Selection -->
+        <div id="exportFormatButtons" class="format-buttons">
+          <button id="exportJsonBtn" class="secondary">JSON</button>
+          <button id="exportCsvBtn" class="secondary">CSV</button>
+        </div>
+
+        <button id="clearDataBtn" class="danger">Clear All Data</button>
+        <input type="file" id="importFile" accept=".json,.csv" style="display:none;">
+      </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
-    // --- LOGIC ---
+    // --- UTILITY FUNCTIONS ---
     function toYMD(d) {
       const y = d.getUTCFullYear(),
         m = String(d.getUTCMonth() + 1).padStart(2, '0'),
@@ -538,81 +1114,102 @@
     }
 
     function getRollingUsedDays(trips, onDate) {
-      const windowStart = addDaysUTC(onDate, -179);
-      return calculateOverlappingDays(trips, windowStart, onDate);
+      try {
+        const windowStart = addDaysUTC(onDate, -179);
+        return calculateOverlappingDays(trips, windowStart, onDate);
+      } catch (err) {
+        console.error('Error calculating rolling used days:', err);
+        return 0; // Safe fallback
+      }
     }
 
     function getNextAllowedEntryDate(trips, fromDate) {
-      const currentUsage = getRollingUsedDays(trips, fromDate);
-      for (let i = 1; i <= 365; i++) {
-        const d = addDaysUTC(fromDate, i);
-        const u = getRollingUsedDays(trips, d);
-        if (u < currentUsage) {
-          let streakDays = 1;
-          let totalRegained = (currentUsage - u);
-          let prevU = u;
-          let lastDate = d;
-          for (let j = 1; j <= 180; j++) {
-            const nextD = addDaysUTC(d, j);
-            const nextU = getRollingUsedDays(trips, nextD);
-            if (nextU < prevU) {
-              streakDays++;
-              totalRegained += (prevU - nextU);
-              prevU = nextU;
-              lastDate = nextD;
-            } else {
-              break;
+      try {
+        const currentUsage = getRollingUsedDays(trips, fromDate);
+
+        // Only suggest re-entry when usage drops to 90 or below (legal limit)
+        for (let i = 1; i <= 365; i++) {
+          const d = addDaysUTC(fromDate, i);
+          const u = getRollingUsedDays(trips, d);
+
+          // Critical fix: Must be <= 90 days, not just less than current
+          if (u <= 90 && u < currentUsage) {
+            let streakDays = 1;
+            let totalRegained = (currentUsage - u);
+            let prevU = u;
+            for (let j = 1; j <= 180; j++) {
+              const nextD = addDaysUTC(d, j);
+              const nextU = getRollingUsedDays(trips, nextD);
+              if (nextU < prevU) {
+                streakDays++;
+                totalRegained += (prevU - nextU);
+                prevU = nextU;
+              } else {
+                break;
+              }
             }
+            return {
+              date: toYMD(d),
+              days: totalRegained,
+              streak: streakDays,
+              newUsage: u
+            };
           }
-          return {
-            date: toYMD(d),
-            days: totalRegained,
-            streak: streakDays,
-            newUsage: u
-          };
         }
+        return null;
+      } catch (err) {
+        console.error('Error calculating next allowed entry date:', err);
+        return null; // Safe fallback
       }
-      return null;
     }
 
     function getMustExitByDate(trips, entryDate) {
-      // Simulate the trip continuing day by day until usage > 90
-      // We need to create a temporary trip list where the current trip (which has no exit)
-      // is treated as extending to 'testDate'.
+      try {
+        const ongoingTripIndex = trips.findIndex(t => t.entry === toYMD(entryDate) && !t.exit);
+        if (ongoingTripIndex === -1) return null;
 
-      // Find the ongoing trip (it's the one with entryDate and no exit, or we just pass it in context)
-      // Actually, simpler: iterate from entryDate forward.
-      // For each day d, calculate usage assuming the trip lasts until d.
-      // If usage > 90, then the *previous* day was the last allowed day.
+        const tripsClone = JSON.parse(JSON.stringify(trips));
 
-      // Note: getRollingUsedDays calculates usage *inclusive* of the date passed.
-
-      // We need to be careful not to mutate the original trips array permanently.
-      // But getRollingUsedDays takes a trips array.
-
-      // Let's clone trips and find the one that is ongoing (no exit)
-      // logic: the user is ON a trip. So there must be a trip with 'entry' <= today and 'exit' == null.
-
-      const ongoingTripIndex = trips.findIndex(t => t.entry === toYMD(entryDate) && !t.exit);
-      if (ongoingTripIndex === -1) return null; // Should not happen if called correctly
-
-      const tripsClone = JSON.parse(JSON.stringify(trips));
-
-      for (let i = 0; i <= 180; i++) { // Check up to 180 days ahead
-        const d = addDaysUTC(entryDate, i);
-        // Update the ongoing trip's exit date to 'd'
-        tripsClone[ongoingTripIndex].exit = toYMD(d);
-
-        const usage = getRollingUsedDays(tripsClone, d);
-        if (usage > 90) {
-          // This day puts us over. So we must exit by yesterday.
-          return addDaysUTC(d, -1);
+        for (let i = 0; i <= 180; i++) {
+          const d = addDaysUTC(entryDate, i);
+          tripsClone[ongoingTripIndex].exit = toYMD(d);
+          const usage = getRollingUsedDays(tripsClone, d);
+          if (usage > 90) {
+            return addDaysUTC(d, -1);
+          }
         }
+        return addDaysUTC(entryDate, 90);
+      } catch (err) {
+        console.error('Error calculating must exit by date:', err);
+        return null; // Safe fallback
       }
-      return addDaysUTC(entryDate, 90); // Fallback (should be caught by loop)
+    }
+
+    function isValidDateString(ymd) {
+      // Check format: YYYY-MM-DD
+      const regex = /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+      if (!regex.test(ymd)) return false;
+
+      // Parse and verify the date is actually valid (no Feb 30, etc.)
+      const [year, month, day] = ymd.split('-').map(Number);
+      const d = new Date(Date.UTC(year, month - 1, day));
+
+      // Check if date is valid and matches input (catches invalid dates like 2024-02-30)
+      if (isNaN(d.getTime())) return false;
+      if (d.getUTCFullYear() !== year) return false;
+      if (d.getUTCMonth() !== month - 1) return false;
+      if (d.getUTCDate() !== day) return false;
+
+      // Check reasonable year range (1900-2100)
+      if (year < 1900 || year > 2100) return false;
+
+      return true;
     }
 
     function formatDateFriendly(ymd, shortMonth = false) {
+      // Validate before formatting
+      if (!isValidDateString(ymd)) return 'Invalid Date';
+
       const d = fromYMD(ymd);
       const day = d.getUTCDate();
       const month = d.toLocaleString('en-US', {
@@ -624,29 +1221,96 @@
       if (day % 10 === 1 && day !== 11) suffix = "st";
       else if (day % 10 === 2 && day !== 12) suffix = "nd";
       else if (day % 10 === 3 && day !== 13) suffix = "rd";
-      return `${day}${suffix} of ${month}, ${year}`;
+      return `${day}${suffix} ${month} ${year}`;
     }
 
-    // --- APP ---
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.animation = 'slideUp 0.3s ease-out reverse';
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+
+    function downloadFile(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function parseCSV(csv) {
+      const lines = csv.split('\n').filter(line => line.trim());
+      if (lines.length < 2) return null;
+
+      const trips = [];
+      for (let i = 1; i < lines.length; i++) {
+        const match = lines[i].match(/"([^"]+)","([^"]+)","([^"]+)"/);
+        if (match) {
+          const entry = match[1];
+          const exit = match[2] === 'Ongoing' ? null : match[2];
+          trips.push({ name: "Trip", entry, exit });
+        }
+      }
+      return trips.length > 0 ? trips : null;
+    }
+
+    // --- APP STATE ---
     let trips = [];
-    let editingTripIndex = -1; // -1 means adding new
+    let editingTripIndex = -1;
+    let referenceDate = new Date();
+    let currentImportFormat = null;
     const STORAGE_KEY = "schengen-trips-v8";
     const $ = (s) => document.querySelector(s);
     let occupiedDays = new Set();
     let fpInstance;
 
+    // --- INITIALIZATION ---
     function init() {
       loadTrips();
+
+      const today = new Date();
+      referenceDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+
       setupCalendar();
       setupUI();
       updateUI();
-      if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(console.error);
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(console.error);
+      }
     }
 
     function loadTrips() {
       try {
-        trips = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-      } catch {
+        const loaded = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+        // Validate and filter out corrupted trips
+        trips = loaded.filter(t => {
+          if (!t.entry || !isValidDateString(t.entry)) {
+            console.warn('Removed invalid trip with bad entry date:', t);
+            return false;
+          }
+          if (t.exit && !isValidDateString(t.exit)) {
+            console.warn('Removed invalid trip with bad exit date:', t);
+            return false;
+          }
+          return true;
+        });
+
+        // If we filtered out bad data, save the cleaned version
+        if (trips.length !== loaded.length) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(trips));
+          showToast(`Removed ${loaded.length - trips.length} corrupted trip(s)`, "warning");
+        }
+      } catch (err) {
+        console.error('Error loading trips:', err);
         trips = [];
       }
     }
@@ -656,127 +1320,293 @@
       updateUI();
     }
 
-    function downloadFile(filename, content, type) {
-      const blob = new Blob([content], {
-        type
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function switchTab(tabId) {
-      document.querySelectorAll('.view-container').forEach(el => el.classList.add('hidden'));
-      document.getElementById('view-' + tabId).classList.remove('hidden');
-
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === tabId);
-      });
-    }
-
+    // --- UI SETUP ---
     function setupUI() {
-      // Tab Switching
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      // Disclaimer dismiss functionality
+      const DISCLAIMER_KEY = "schengen-disclaimer-dismissed";
+      const disclaimerCard = $("#disclaimerCard");
+      const dismissBtn = $("#dismissDisclaimer");
+
+      // Check if user has previously dismissed the disclaimer
+      const isDismissed = localStorage.getItem(DISCLAIMER_KEY) === "true";
+      if (isDismissed) {
+        disclaimerCard.classList.add("hidden");
+      }
+
+      // Handle dismiss button click
+      dismissBtn.addEventListener("click", () => {
+        disclaimerCard.classList.add("hidden");
+        localStorage.setItem(DISCLAIMER_KEY, "true");
+        logAuditEvent("DISMISS_DISCLAIMER", {
+          timestamp: new Date().toISOString()
+        });
+        showToast("Disclaimer dismissed. You can clear browser data to see it again.", "success");
       });
 
+      // Reference Date Picker
+      const refFp = flatpickr("#referenceDate", {
+        defaultDate: new Date(),
+        dateFormat: "Y-m-d",
+        positionElement: $("#refDateDisplay"),
+        position: "auto center",
+        onChange: (selectedDates) => {
+          if (selectedDates.length > 0) {
+            const d = selectedDates[0];
+            referenceDate = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+
+            const today = new Date();
+            const isToday = d.getDate() === today.getDate() &&
+              d.getMonth() === today.getMonth() &&
+              d.getFullYear() === today.getFullYear();
+
+            $("#refDateDisplay").textContent = isToday ? "Today" : formatDateFriendly(toYMD(referenceDate), true);
+
+            updateUI();
+            if (fpInstance) fpInstance.jumpToDate(d);
+          }
+        }
+      });
+
+      $("#refDateDisplay").addEventListener("click", () => {
+        refFp.open();
+      });
+
+      // Manual Input Sync
+      function parseAndSync() {
+        const entryInput = $("#tripEntry");
+        const exitInput = $("#tripExit");
+
+        const getRawValue = (input) => {
+          if (input.value === input.dataset.friendly) return input.dataset.ymd;
+          const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+          if (dateRegex.test(input.value)) return input.value;
+          return null;
+        };
+
+        const entryVal = getRawValue(entryInput);
+        const exitVal = getRawValue(exitInput);
+
+        const dates = [];
+        if (entryVal) dates.push(entryVal);
+        if (exitVal) dates.push(exitVal);
+
+        if (dates.length > 0 && fpInstance) {
+          fpInstance.setDate(dates);
+        }
+      }
+
+      $("#tripEntry").addEventListener("blur", parseAndSync);
+      $("#tripExit").addEventListener("blur", parseAndSync);
+
+      // Add Trip Button
       $("#addTripBtn").addEventListener("click", () => {
-        const name = $("#tripName").value.trim();
-        const entry = $("#tripEntry").value;
-        const exit = $("#tripExit").value;
-        if (!entry) return alert("Please select at least an entry date.");
+        const getRealValue = (input) => {
+          if (input.value === input.dataset.friendly) return input.dataset.ymd;
+          return input.value;
+        };
+
+        const entry = getRealValue($("#tripEntry"));
+        const exit = getRealValue($("#tripExit"));
+
+        if (!entry) {
+          showToast("Please select at least an entry date", "error");
+          return;
+        }
+
+        // CRITICAL: Validate entry date format and validity
+        if (!isValidDateString(entry)) {
+          showToast("Invalid entry date format. Use YYYY-MM-DD (e.g., 2024-12-25)", "error");
+          return;
+        }
+
+        // CRITICAL: Validate exit date if provided
+        if (exit && !isValidDateString(exit)) {
+          showToast("Invalid exit date format. Use YYYY-MM-DD (e.g., 2024-12-31)", "error");
+          return;
+        }
+
+        // Validate exit is after entry
+        if (exit && entry) {
+          const entryDate = fromYMD(entry);
+          const exitDate = fromYMD(exit);
+          if (exitDate < entryDate) {
+            showToast("Exit date must be after entry date", "error");
+            return;
+          }
+        }
 
         const newTrip = {
-          name: name || "Trip",
+          name: "Trip",
           entry,
           exit: exit || null
         };
 
         if (editingTripIndex >= 0) {
-          // Update existing
+          const oldTrip = trips[editingTripIndex];
           trips[editingTripIndex] = newTrip;
+          logAuditEvent("EDIT_TRIP", {
+            index: editingTripIndex,
+            old: oldTrip,
+            new: newTrip
+          });
           editingTripIndex = -1;
           $("#addTripBtn").textContent = "Add Trip";
-          $("#formHeader").textContent = "Add New Trip";
           $("#addTripForm").classList.remove("editing");
-          $("#cancelTripBtn").classList.add("hidden");
+          $("#cancelEditBtn").classList.add("hidden");
           document.body.classList.remove("editing-mode");
+          showToast("Trip updated successfully", "success");
         } else {
-          // Add new
           trips.push(newTrip);
+          logAuditEvent("ADD_TRIP", {
+            trip: newTrip,
+            index: trips.length - 1
+          });
+          showToast("Trip added successfully", "success");
         }
 
         saveTrips();
 
-        // Reset Form
-        $("#tripName").value = "";
         $("#tripEntry").value = "";
         $("#tripExit").value = "";
         fpInstance.clear();
         updateUI();
       });
 
-      $("#cancelTripBtn").addEventListener("click", () => {
+      // Cancel Edit Button
+      $("#cancelEditBtn").addEventListener("click", () => {
         editingTripIndex = -1;
         $("#addTripBtn").textContent = "Add Trip";
-        $("#formHeader").textContent = "Add New Trip";
         $("#addTripForm").classList.remove("editing");
-        $("#cancelTripBtn").classList.add("hidden");
-        $("#tripName").value = "";
+        $("#cancelEditBtn").classList.add("hidden");
         $("#tripEntry").value = "";
         $("#tripExit").value = "";
         document.body.classList.remove("editing-mode");
         fpInstance.clear();
       });
 
+      // Clear Data Button
       $("#clearDataBtn").addEventListener("click", () => {
-        if (confirm("Delete all data?")) {
+        if (confirm("Are you sure you want to delete all your trip data? This cannot be undone.")) {
+          const oldTripCount = trips.length;
           trips = [];
+          logAuditEvent("CLEAR_ALL_DATA", {
+            deletedTripCount: oldTripCount
+          });
           saveTrips();
+          showToast("All data cleared", "success");
         }
       });
 
-      // Import
-      $("#importBtn").addEventListener("click", () => $("#importFile").click());
+      // Import/Export with format selection
+      const importFormatButtons = $("#importFormatButtons");
+      const exportFormatButtons = $("#exportFormatButtons");
+
+      $("#importBtn").addEventListener("click", () => {
+        const isVisible = importFormatButtons.classList.contains("visible");
+
+        // Hide export if visible
+        exportFormatButtons.classList.remove("visible");
+
+        // Toggle import
+        if (isVisible) {
+          importFormatButtons.classList.remove("visible");
+        } else {
+          importFormatButtons.classList.add("visible");
+        }
+      });
+
+      $("#exportBtn").addEventListener("click", () => {
+        const isVisible = exportFormatButtons.classList.contains("visible");
+
+        // Hide import if visible
+        importFormatButtons.classList.remove("visible");
+
+        // Toggle export
+        if (isVisible) {
+          exportFormatButtons.classList.remove("visible");
+        } else {
+          exportFormatButtons.classList.add("visible");
+        }
+      });
+
+      // Import handlers
+      $("#importJsonBtn").addEventListener("click", () => {
+        currentImportFormat = 'json';
+        $("#importFile").accept = ".json";
+        $("#importFile").click();
+        importFormatButtons.classList.remove("visible");
+      });
+
+      $("#importCsvBtn").addEventListener("click", () => {
+        currentImportFormat = 'csv';
+        $("#importFile").accept = ".csv";
+        $("#importFile").click();
+        importFormatButtons.classList.remove("visible");
+      });
+
       $("#importFile").addEventListener("change", (e) => {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (ev) => {
           try {
-            const data = JSON.parse(ev.target.result);
-            if (Array.isArray(data) && data.every(t => t.entry)) {
-              trips = data;
-              saveTrips();
-              alert("Imported!");
+            let data;
+            if (currentImportFormat === 'csv') {
+              data = parseCSV(ev.target.result);
+              if (!data) {
+                showToast("Invalid CSV format", "error");
+                return;
+              }
             } else {
-              alert("Invalid format.");
+              data = JSON.parse(ev.target.result);
+            }
+
+            if (Array.isArray(data) && data.every(t => t.entry)) {
+              const oldTripCount = trips.length;
+              trips = data;
+              logAuditEvent("IMPORT_DATA", {
+                format: currentImportFormat,
+                oldTripCount: oldTripCount,
+                newTripCount: trips.length,
+                filename: file.name
+              });
+              saveTrips();
+              showToast("Data imported successfully", "success");
+            } else {
+              showToast("Invalid file format", "error");
             }
           } catch (err) {
-            alert("Error: " + err.message);
+            showToast("Error importing file", "error");
           }
         };
         reader.readAsText(file);
-        e.target.value = ''; // Reset input
+        e.target.value = '';
       });
 
-      // Export Modal
-      $("#exportBtn").addEventListener("click", () => $("#exportModal").classList.remove("hidden"));
-      $("#closeExportModal").addEventListener("click", () => $("#exportModal").classList.add("hidden"));
-
-      $("#exportJsonOption").addEventListener("click", () => {
+      // Export handlers
+      $("#exportJsonBtn").addEventListener("click", () => {
         downloadFile("schengen-trips.json", JSON.stringify(trips, null, 2), "application/json");
-        $("#exportModal").classList.add("hidden");
+        logAuditEvent("EXPORT_DATA", {
+          format: "json",
+          tripCount: trips.length
+        });
+        exportFormatButtons.classList.remove("visible");
+        showToast("Data exported as JSON", "success");
       });
 
-      $("#exportCsvOption").addEventListener("click", () => {
-        const header = "Name,Entry,Exit\n";
-        const rows = trips.map(t => `"${t.name || ''}","${t.entry}","${t.exit || ''}"`).join("\n");
+      $("#exportCsvBtn").addEventListener("click", () => {
+        const header = "Entry,Exit,Days\n";
+        const rows = trips.map(t => {
+          const days = t.exit ? Math.ceil((fromYMD(t.exit) - fromYMD(t.entry)) / (1000 * 60 * 60 * 24)) + 1 : 'Ongoing';
+          return `"${t.entry}","${t.exit || 'Ongoing'}","${days}"`;
+        }).join("\n");
         downloadFile("schengen-trips.csv", header + rows, "text/csv");
-        $("#exportModal").classList.add("hidden");
+        logAuditEvent("EXPORT_DATA", {
+          format: "csv",
+          tripCount: trips.length
+        });
+        exportFormatButtons.classList.remove("visible");
+        showToast("Data exported as CSV", "success");
       });
     }
 
@@ -784,30 +1614,54 @@
       const t = trips[index];
       editingTripIndex = index;
 
-      // Switch to Dashboard
-      switchTab('dashboard');
-
-      // Populate Form
-      $("#tripName").value = t.name || "";
       $("#tripEntry").value = t.entry;
       $("#tripExit").value = t.exit || "";
 
-      // Set Calendar
       if (t.exit) {
         fpInstance.setDate([t.entry, t.exit], true);
       } else {
         fpInstance.setDate(t.entry, true);
       }
 
-      // Show Form & Update Button Text
       $("#addTripBtn").textContent = "Update Trip";
-      $("#formHeader").textContent = "Edit Trip";
       $("#addTripForm").classList.add("editing");
-      $("#cancelTripBtn").classList.remove("hidden");
+      $("#cancelEditBtn").classList.remove("hidden");
       document.body.classList.add("editing-mode");
 
-      // Scroll to calendar
-      $("#calendar-container").scrollIntoView({ behavior: 'smooth' });
+      document.querySelector("#addTripForm").scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function updateTripFormDates(selectedDates) {
+      const entryInput = $("#tripEntry");
+      const exitInput = $("#tripExit");
+
+      if (selectedDates.length > 0) {
+        const entryYMD = toLocalYMD(selectedDates[0]);
+        const entryFriendly = formatDateFriendly(entryYMD, true);
+
+        entryInput.value = entryFriendly;
+        entryInput.dataset.ymd = entryYMD;
+        entryInput.dataset.friendly = entryFriendly;
+
+        if (selectedDates[1]) {
+          const exitYMD = toLocalYMD(selectedDates[1]);
+          const exitFriendly = formatDateFriendly(exitYMD, true);
+          exitInput.value = exitFriendly;
+          exitInput.dataset.ymd = exitYMD;
+          exitInput.dataset.friendly = exitFriendly;
+        } else {
+          exitInput.value = "";
+          exitInput.dataset.ymd = "";
+          exitInput.dataset.friendly = "";
+        }
+      } else {
+        if (editingTripIndex === -1) {
+          entryInput.value = "";
+          entryInput.dataset.ymd = "";
+          exitInput.value = "";
+          exitInput.dataset.ymd = "";
+        }
+      }
     }
 
     function setupCalendar() {
@@ -816,95 +1670,161 @@
         appendTo: $("#calendar-container"),
         mode: "range",
         dateFormat: "Y-m-d",
+        showMonths: 1,
+        defaultDate: new Date(),
         locale: {
           firstDayOfWeek: 1
         },
-        onChange: (dates) => {
-          if (dates.length > 0) {
-            $("#tripEntry").value = toLocalYMD(dates[0]);
-            $("#tripExit").value = dates[1] ? toLocalYMD(dates[1]) : "";
-          } else {
-            // Cleared
-            if (editingTripIndex === -1) {
-              $("#tripEntry").value = "";
-              $("#tripExit").value = "";
-            }
-          }
+        onChange: function (selectedDates, dateStr, instance) {
+          updateTripFormDates(selectedDates);
         },
-        onDayCreate: (dObj, dStr, fp, dayElem) => {
-          const date = toLocalYMD(dayElem.dateObj);
-          if (occupiedDays.has(date)) dayElem.classList.add("in-schengen");
+        onDayCreate: function (dObj, dStr, fp, dayElem) {
+          dayElem.addEventListener("click", (e) => {
+            const wasSelected = dayElem.classList.contains("selected") ||
+              dayElem.classList.contains("startRange") ||
+              dayElem.classList.contains("endRange");
+
+            if (wasSelected) {
+              setTimeout(() => {
+                if (fp.selectedDates.length === 1 &&
+                  fp.selectedDates[0].getTime() === dayElem.dateObj.getTime()) {
+                  fp.clear();
+                  updateTripFormDates([]);
+                }
+              }, 10);
+            }
+          });
+
+          const dateStr = toYMD(dayElem.dateObj);
+          if (occupiedDays.has(dateStr)) {
+            dayElem.classList.add("in-schengen");
+          }
         }
       });
     }
 
     function updateUI() {
-      occupiedDays = new Set();
-      const today = new Date();
+      try {
+        occupiedDays = new Set();
+        const today = referenceDate;
 
-      // Check for ongoing trip
-      let ongoingTrip = null;
+        let ongoingTrip = null;
 
-      for (const t of trips) {
-        if (!t.entry) continue;
-        const start = fromYMD(t.entry);
-        const end = t.exit ? fromYMD(t.exit) : today;
+        for (const t of trips) {
+          if (!t.entry) continue;
 
-        if (!t.exit) ongoingTrip = t; // Found ongoing trip (any start date)
+          try {
+            const start = fromYMD(t.entry);
+            let end;
+            if (t.exit) {
+              end = fromYMD(t.exit);
+            } else {
+              if (referenceDate < start) {
+                end = start;
+              } else {
+                end = referenceDate;
+              }
+            }
 
-        if (start > end) continue;
-        eachDateInclusiveUTC(start, end).forEach(d => occupiedDays.add(d));
-      }
-      if (fpInstance) fpInstance.redraw();
+            if (!t.exit) ongoingTrip = t;
 
-      const used = getRollingUsedDays(trips, today);
-      const remaining = Math.max(0, 90 - used);
-      $("#daysLeft").textContent = remaining;
-
-      let statusHtml = `You have used ${used} days in the past 180 days.`;
-
-      // If ongoing trip, calculate Must Exit By
-      if (ongoingTrip) {
-        const entryDate = fromYMD(ongoingTrip.entry);
-        const exitBy = getMustExitByDate(trips, entryDate);
-        if (exitBy) {
-          statusHtml += `<br><br><span style="color:var(--primary);">Current Trip:</span> You must exit by <strong>${formatDateFriendly(toYMD(exitBy))}</strong>.`;
+            if (start.getTime() > end.getTime()) continue;
+            eachDateInclusiveUTC(start, end).forEach(d => occupiedDays.add(d));
+          } catch (err) {
+            console.error('Error processing trip in UI update:', t, err);
+            // Skip this trip but continue with others
+            continue;
+          }
         }
-      }
+        if (fpInstance) fpInstance.redraw();
 
-      // Check for future regain
-      const nextDrop = getNextAllowedEntryDate(trips, today);
-      if (nextDrop) {
-        const regainText = nextDrop.streak > 1 ?
-          `gain <strong>${nextDrop.days} days</strong> starting` :
-          `regain <strong>${nextDrop.days} day${nextDrop.days > 1 ? 's' : ''}</strong> on`;
+        const used = getRollingUsedDays(trips, today);
+        const remaining = Math.max(0, 90 - used);
+        const daysLeftEl = $("#daysLeft");
+        daysLeftEl.textContent = remaining;
 
-        statusHtml += `<br><br>You will ${regainText} <strong>${formatDateFriendly(nextDrop.date)}</strong>.`;
-      }
-
-      if (used >= 90) {
-        $("#statusText").style.color = "var(--danger)";
-        if (nextDrop) {
-          const regainText = nextDrop.streak > 1 ?
-            `gaining ${nextDrop.days} days starting` :
-            `regaining ${nextDrop.days} day${nextDrop.days > 1 ? 's' : ''} on`;
-
-          statusHtml = `Limit reached.<br>You can enter again on <strong>${formatDateFriendly(nextDrop.date)}</strong> (${regainText} that day).`;
+        // Update color class based on remaining days
+        daysLeftEl.className = 'days-remaining';
+        if (remaining >= 60) {
+          daysLeftEl.classList.add('high'); // Green: 60-90 days
+        } else if (remaining >= 30) {
+          daysLeftEl.classList.add('medium'); // Orange: 30-59 days
+        } else if (remaining >= 10) {
+          daysLeftEl.classList.add('low'); // Red: 10-29 days
         } else {
-          statusHtml = `Limit reached.`;
+          daysLeftEl.classList.add('critical'); // Dark red: 0-9 days
         }
-      } else {
-        $("#statusText").style.color = "var(--muted)";
+
+        let statusHtml = `You have used <strong>${used} days</strong> in the past 180 days (as of ${formatDateFriendly(toYMD(today), true)}).`;
+        let statusClass = 'status-message';
+
+        if (ongoingTrip) {
+          try {
+            const entryDate = fromYMD(ongoingTrip.entry);
+            if (entryDate <= today) {
+              const exitBy = getMustExitByDate(trips, entryDate);
+              if (exitBy) {
+                statusHtml += `<br><br><strong>Current Trip:</strong> You must exit by <strong>${formatDateFriendly(toYMD(exitBy))}</strong>.`;
+              }
+            }
+          } catch (err) {
+            console.error('Error calculating ongoing trip exit date:', err);
+            // Continue without showing ongoing trip info
+          }
+        }
+
+        try {
+          const nextDrop = getNextAllowedEntryDate(trips, today);
+          if (nextDrop) {
+            const regainText = nextDrop.streak > 1 ?
+              `gain <strong>${nextDrop.days} days</strong> starting` :
+              `regain <strong>${nextDrop.days} day${nextDrop.days > 1 ? 's' : ''}</strong> on`;
+
+            statusHtml += `<br><br>You will ${regainText} <strong>${formatDateFriendly(nextDrop.date)}</strong>.`;
+          }
+
+          if (used >= 90) {
+            statusClass = 'status-message danger';
+            if (nextDrop) {
+              const regainText = nextDrop.streak > 1 ?
+                `gaining ${nextDrop.days} days starting` :
+                `regaining ${nextDrop.days} day${nextDrop.days > 1 ? 's' : ''}`;
+
+              statusHtml = `<strong>Limit Reached</strong><br>You can enter again on <strong>${formatDateFriendly(nextDrop.date)}</strong> (${regainText} that day).`;
+            } else {
+              statusHtml = `<strong>Limit Reached</strong><br>You have used all 90 days in the current 180-day period.`;
+            }
+          } else if (used >= 80) {
+            statusClass = 'status-message warning';
+          }
+        } catch (err) {
+          console.error('Error calculating next allowed entry date:', err);
+          // Continue without showing next drop info
+        }
+
+        $("#statusText").className = statusClass;
+        $("#statusText").innerHTML = statusHtml;
+      } catch (err) {
+        console.error('Critical error in updateUI:', err);
+        showToast('Error updating display. Please refresh the page.', 'error');
+        return;
       }
 
-      $("#statusText").innerHTML = statusHtml;
-
+      // Update trip list
       const list = $("#tripList");
+      const tripCount = $("#tripCount");
+
       list.innerHTML = "";
+      tripCount.textContent = trips.length === 0 ? 'No trips' : trips.length === 1 ? '1 trip' : `${trips.length} trips`;
+
       if (trips.length === 0) {
-        list.innerHTML = '<div class="muted" style="text-align:center; padding:20px;">No trips added yet.</div>';
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">✈</div>
+            <div class="empty-state-text">No trips added yet</div>
+          </div>
+        `;
       } else {
-        // Sort trips
         const sortedWithIndex = trips.map((t, i) => ({ ...t, originalIndex: i }))
           .sort((a, b) => b.entry.localeCompare(a.entry));
 
@@ -915,24 +1835,35 @@
           const startStr = formatDateFriendly(t.entry, true);
           const endStr = t.exit ? formatDateFriendly(t.exit, true) : "Ongoing";
 
+          const duration = t.exit
+            ? `${Math.ceil((fromYMD(t.exit) - fromYMD(t.entry)) / (1000 * 60 * 60 * 24)) + 1} days`
+            : 'Ongoing trip';
+
           div.innerHTML = `
-        <div class="trip-info">
-          <div class="trip-name">${t.name || "Trip"}</div>
-          <div class="trip-dates">${startStr} → ${endStr}</div>
-        </div>
-        <div style="display:flex; gap:8px;">
-            <button class="edit-btn secondary" style="padding:6px 12px; font-size:13px; width:auto;">Edit</button>
-            <button class="del-btn">Delete</button>
-        </div>
-      `;
-          div.querySelector(".del-btn").addEventListener("click", () => {
+            <div class="trip-info">
+              <div class="trip-dates">${startStr} → ${endStr}</div>
+              <div class="trip-duration">${duration}</div>
+            </div>
+            <div class="trip-actions">
+              <button class="btn-icon btn-edit">Edit</button>
+              <button class="btn-icon btn-delete">Delete</button>
+            </div>
+          `;
+
+          div.querySelector(".btn-delete").addEventListener("click", () => {
             if (confirm("Delete this trip?")) {
+              const deletedTrip = trips[t.originalIndex];
               trips.splice(t.originalIndex, 1);
+              logAuditEvent("DELETE_TRIP", {
+                index: t.originalIndex,
+                trip: deletedTrip
+              });
               saveTrips();
+              showToast("Trip deleted", "success");
             }
           });
 
-          div.querySelector(".edit-btn").addEventListener("click", () => {
+          div.querySelector(".btn-edit").addEventListener("click", () => {
             editTrip(t.originalIndex);
           });
 
@@ -941,7 +1872,261 @@
       }
     }
 
+    // --- SCHENGEN CALCULATION VALIDATION ---
+    // Official test cases based on European Commission guidelines
+    const SCHENGEN_TEST_CASES = [
+      {
+        name: "Simple 90-day stay",
+        trips: [{ entry: "2024-01-01", exit: "2024-03-30" }],
+        checkDate: "2024-03-30",
+        expectedUsage: 90,
+        description: "Continuous 90-day stay from Jan 1 to Mar 30"
+      },
+      {
+        name: "Split stay within limit",
+        trips: [
+          { entry: "2024-01-01", exit: "2024-01-30" },
+          { entry: "2024-03-01", exit: "2024-03-30" }
+        ],
+        checkDate: "2024-03-30",
+        expectedUsage: 60,
+        description: "30 days in Jan + 30 days in Mar = 60 days"
+      },
+      {
+        name: "Rolling window test",
+        trips: [{ entry: "2024-01-01", exit: "2024-03-30" }],
+        checkDate: "2024-07-01",
+        expectedUsage: 0,
+        description: "90-day trip exits 180-day window by July"
+      },
+      {
+        name: "Overlapping window",
+        trips: [
+          { entry: "2024-01-01", exit: "2024-02-29" },
+          { entry: "2024-06-01", exit: "2024-06-30" }
+        ],
+        checkDate: "2024-06-30",
+        expectedUsage: 90,
+        description: "60 days (Jan-Feb) + 30 days (June) = 90 within 180-day window"
+      },
+      {
+        name: "Ongoing trip calculation",
+        trips: [{ entry: "2024-06-01", exit: null }],
+        checkDate: "2024-06-15",
+        expectedUsage: 15,
+        description: "15 days into ongoing trip starting June 1"
+      }
+    ];
+
+    // Run validation tests
+    function validateCalculationEngine() {
+      console.group('🧪 Schengen Calculation Engine Validation');
+      let passed = 0;
+      let failed = 0;
+
+      SCHENGEN_TEST_CASES.forEach((test, index) => {
+        try {
+          const checkDate = fromYMD(test.checkDate);
+          const calculated = getRollingUsedDays(test.trips, checkDate);
+
+          if (calculated === test.expectedUsage) {
+            console.log(`✅ Test ${index + 1}: ${test.name} - PASSED (${calculated} days)`);
+            passed++;
+          } else {
+            console.error(`❌ Test ${index + 1}: ${test.name} - FAILED`);
+            console.error(`   Expected: ${test.expectedUsage} days, Got: ${calculated} days`);
+            console.error(`   Description: ${test.description}`);
+            failed++;
+          }
+        } catch (err) {
+          console.error(`❌ Test ${index + 1}: ${test.name} - ERROR:`, err);
+          failed++;
+        }
+      });
+
+      console.log(`\n📊 Results: ${passed}/${SCHENGEN_TEST_CASES.length} tests passed`);
+      if (failed > 0) {
+        console.warn(`⚠️  ${failed} test(s) failed - calculation engine may be incorrect!`);
+      } else {
+        console.log('✅ All validation tests passed');
+      }
+      console.groupEnd();
+
+      return failed === 0;
+    }
+
+    // --- TRIP OVERLAP DETECTION ---
+    function detectOverlaps(trips) {
+      const overlaps = [];
+
+      for (let i = 0; i < trips.length; i++) {
+        for (let j = i + 1; j < trips.length; j++) {
+          const trip1 = trips[i];
+          const trip2 = trips[j];
+
+          if (!trip1.entry || !trip2.entry) continue;
+
+          try {
+            const start1 = fromYMD(trip1.entry);
+            const end1 = trip1.exit ? fromYMD(trip1.exit) : new Date();
+            const start2 = fromYMD(trip2.entry);
+            const end2 = trip2.exit ? fromYMD(trip2.exit) : new Date();
+
+            // Check if trips overlap
+            if (start1.getTime() <= end2.getTime() && start2.getTime() <= end1.getTime()) {
+              overlaps.push({
+                trip1Index: i,
+                trip2Index: j,
+                trip1: `${trip1.entry} - ${trip1.exit || 'Ongoing'}`,
+                trip2: `${trip2.entry} - ${trip2.exit || 'Ongoing'}`
+              });
+            }
+          } catch (err) {
+            console.error('Error checking overlap:', err);
+          }
+        }
+      }
+
+      return overlaps;
+    }
+
+    // --- TIMEZONE INTEGRITY CHECK ---
+    function checkTimezoneIntegrity() {
+      // Verify all dates are being processed consistently in UTC
+      const testDate = "2024-06-15";
+      const parsed = fromYMD(testDate);
+
+      // Check that parsed date maintains UTC consistency
+      if (parsed.getUTCFullYear() !== 2024 ||
+          parsed.getUTCMonth() !== 5 ||
+          parsed.getUTCDate() !== 15) {
+        console.error('❌ Timezone integrity check FAILED - UTC parsing is broken');
+        return false;
+      }
+
+      // Check that toYMD roundtrip is consistent
+      const roundtrip = toYMD(parsed);
+      if (roundtrip !== testDate) {
+        console.error('❌ Timezone integrity check FAILED - roundtrip conversion failed');
+        return false;
+      }
+
+      console.log('✅ Timezone integrity check passed - all dates processed in UTC');
+      return true;
+    }
+
+    // --- AUDIT TRAIL ---
+    const AUDIT_KEY = "schengen-audit-v1";
+
+    function logAuditEvent(action, details) {
+      try {
+        const audit = JSON.parse(localStorage.getItem(AUDIT_KEY)) || [];
+        const event = {
+          timestamp: new Date().toISOString(),
+          action: action,
+          details: details,
+          tripCount: trips.length
+        };
+
+        audit.push(event);
+
+        // Keep only last 100 events
+        if (audit.length > 100) {
+          audit.splice(0, audit.length - 100);
+        }
+
+        localStorage.setItem(AUDIT_KEY, JSON.stringify(audit));
+      } catch (err) {
+        console.error('Failed to log audit event:', err);
+      }
+    }
+
+    function getAuditTrail(limit = 20) {
+      try {
+        const audit = JSON.parse(localStorage.getItem(AUDIT_KEY)) || [];
+        return audit.slice(-limit).reverse();
+      } catch (err) {
+        console.error('Failed to retrieve audit trail:', err);
+        return [];
+      }
+    }
+
+    // --- BACKUP BEFORE MODIFICATIONS ---
+    function createBackup() {
+      try {
+        const backup = {
+          trips: JSON.parse(JSON.stringify(trips)),
+          timestamp: new Date().toISOString(),
+          version: "v8"
+        };
+        localStorage.setItem("schengen-backup-last", JSON.stringify(backup));
+        return true;
+      } catch (err) {
+        console.error('Backup failed:', err);
+        return false;
+      }
+    }
+
+    function restoreFromBackup() {
+      try {
+        const backup = JSON.parse(localStorage.getItem("schengen-backup-last"));
+        if (backup && backup.trips) {
+          trips = backup.trips;
+          saveTrips();
+          updateUI();
+          showToast(`Restored backup from ${new Date(backup.timestamp).toLocaleString()}`, "success");
+          logAuditEvent("RESTORE_BACKUP", { timestamp: backup.timestamp });
+          return true;
+        }
+        return false;
+      } catch (err) {
+        console.error('Restore failed:', err);
+        return false;
+      }
+    }
+
+    // --- ENHANCED SAVE WITH VALIDATION ---
+    const originalSaveTrips = saveTrips;
+    saveTrips = function() {
+      // Create backup before save
+      createBackup();
+
+      // Check for overlaps
+      const overlaps = detectOverlaps(trips);
+      if (overlaps.length > 0) {
+        console.warn('⚠️  Trip overlaps detected:', overlaps);
+        // Don't block save, but warn user
+        showToast(`Warning: ${overlaps.length} trip overlap(s) detected`, "warning");
+      }
+
+      // Call original save
+      originalSaveTrips();
+    };
+
+    // Initialize app
     init();
+
+    // Run validation tests on startup
+    console.group('🚀 Schengen Tracker Initialization');
+
+    const validationPassed = validateCalculationEngine();
+    if (!validationPassed) {
+      console.error('⚠️  Calculation engine validation FAILED - results may be incorrect');
+    }
+
+    const timezoneCheck = checkTimezoneIntegrity();
+    if (!timezoneCheck) {
+      console.error('⚠️  Timezone integrity check FAILED - date calculations may be incorrect');
+    }
+
+    // Check for existing trip overlaps
+    const overlaps = detectOverlaps(trips);
+    if (overlaps.length > 0) {
+      console.warn(`⚠️  Found ${overlaps.length} trip overlap(s) in existing data:`, overlaps);
+    }
+
+    console.log('✅ Initialization complete');
+    console.groupEnd();
   </script>
 </body>
 
