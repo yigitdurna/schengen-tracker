@@ -259,6 +259,11 @@
       gap: 8px;
     }
 
+    .section-header::before,
+    .section-header::after {
+      display: none !important;
+    }
+
     .section-badge {
       font-size: 11px;
       font-weight: 600;
@@ -622,6 +627,18 @@
       margin-bottom: 8px !important;
     }
 
+    .flatpickr-months .flatpickr-month {
+      position: relative;
+    }
+
+    /* Hide any arrow indicators in the calendar header */
+    .flatpickr-months::before,
+    .flatpickr-months::after,
+    .flatpickr-month::before,
+    .flatpickr-month::after {
+      display: none !important;
+    }
+
     .flatpickr-current-month {
       font-size: 16px !important;
       font-weight: 600 !important;
@@ -698,28 +715,35 @@
       display: none !important;
     }
 
-    /* Style year navigation arrows to white */
+    /* Style year navigation arrows to white and remove borders */
     .flatpickr-calendar .numInputWrapper span.arrowUp,
     .flatpickr-calendar .numInputWrapper span.arrowDown {
-      border-color: white transparent transparent transparent !important;
+      border: none !important;
+      border-left: 4px solid transparent !important;
+      border-right: 4px solid transparent !important;
+    }
+
+    .flatpickr-calendar .numInputWrapper span.arrowUp {
+      border-bottom: 5px solid white !important;
     }
 
     .flatpickr-calendar .numInputWrapper span.arrowDown {
-      border-color: transparent transparent white transparent !important;
+      border-top: 5px solid white !important;
     }
 
     .flatpickr-calendar .numInputWrapper span.arrowUp:hover,
     .flatpickr-calendar .numInputWrapper span.arrowDown:hover {
-      opacity: 0.8;
+      opacity: 0.7;
     }
 
-    .flatpickr-calendar .numInputWrapper span {
-      border-color: white transparent transparent transparent !important;
+    /* Remove any horizontal lines from the year input wrapper */
+    .flatpickr-calendar .numInputWrapper {
+      border: none !important;
     }
 
-    .flatpickr-calendar .numInputWrapper span.arrowDown {
-      border-top: none !important;
-      border-bottom-color: white !important;
+    .flatpickr-calendar .numInputWrapper:before,
+    .flatpickr-calendar .numInputWrapper:after {
+      display: none !important;
     }
 
     /* Utility Classes */
