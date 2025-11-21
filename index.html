@@ -711,15 +711,37 @@
 
     /* Hide calendar month navigation arrows completely */
     .flatpickr-prev-month,
-    .flatpickr-next-month {
+    .flatpickr-next-month,
+    .flatpickr-months .flatpickr-prev-month,
+    .flatpickr-months .flatpickr-next-month {
+      display: none !important;
+      visibility: hidden !important;
+      width: 0 !important;
+      height: 0 !important;
+      opacity: 0 !important;
+    }
+
+    /* Hide all SVG elements in flatpickr (removes white arrow) */
+    .flatpickr-calendar svg,
+    .flatpickr-calendar svg *,
+    .flatpickr-months svg,
+    .flatpickr-months svg *,
+    .flatpickr-prev-month svg,
+    .flatpickr-next-month svg,
+    #calendar-container svg,
+    #calendar-container svg * {
+      display: none !important;
+      visibility: hidden !important;
+    }
+
+    /* Force hide any arrow elements */
+    .flatpickr-calendar .flatpickr-prev-month,
+    .flatpickr-calendar .flatpickr-next-month {
       display: none !important;
     }
 
-    /* Hide all SVG elements in flatpickr (removes white arrow above month) */
-    .flatpickr-calendar svg,
-    .flatpickr-months svg,
-    .flatpickr-prev-month svg,
-    .flatpickr-next-month svg {
+    /* Hide flatpickr month dropdown arrow if any */
+    .flatpickr-current-month .flatpickr-monthDropdown-months:after {
       display: none !important;
     }
 
@@ -1708,6 +1730,20 @@
         locale: {
           firstDayOfWeek: 1
         },
+        onReady: function(selectedDates, dateStr, instance) {
+          // Remove any SVG arrows that flatpickr might add
+          setTimeout(() => {
+            const calendarContainer = $("#calendar-container");
+            const allSvgs = calendarContainer.querySelectorAll('svg');
+            allSvgs.forEach(svg => svg.remove());
+
+            const prevMonthArrows = calendarContainer.querySelectorAll('.flatpickr-prev-month');
+            prevMonthArrows.forEach(arrow => arrow.remove());
+
+            const nextMonthArrows = calendarContainer.querySelectorAll('.flatpickr-next-month');
+            nextMonthArrows.forEach(arrow => arrow.remove());
+          }, 0);
+        },
         onChange: function (selectedDates, dateStr, instance) {
           updateTripFormDates(selectedDates);
         },
@@ -1732,6 +1768,34 @@
           if (occupiedDays.has(dateStr)) {
             dayElem.classList.add("in-schengen");
           }
+        },
+        onMonthChange: function(selectedDates, dateStr, instance) {
+          // Remove arrows whenever month changes
+          setTimeout(() => {
+            const calendarContainer = $("#calendar-container");
+            const allSvgs = calendarContainer.querySelectorAll('svg');
+            allSvgs.forEach(svg => svg.remove());
+
+            const prevMonthArrows = calendarContainer.querySelectorAll('.flatpickr-prev-month');
+            prevMonthArrows.forEach(arrow => arrow.remove());
+
+            const nextMonthArrows = calendarContainer.querySelectorAll('.flatpickr-next-month');
+            nextMonthArrows.forEach(arrow => arrow.remove());
+          }, 0);
+        },
+        onYearChange: function(selectedDates, dateStr, instance) {
+          // Remove arrows whenever year changes
+          setTimeout(() => {
+            const calendarContainer = $("#calendar-container");
+            const allSvgs = calendarContainer.querySelectorAll('svg');
+            allSvgs.forEach(svg => svg.remove());
+
+            const prevMonthArrows = calendarContainer.querySelectorAll('.flatpickr-prev-month');
+            prevMonthArrows.forEach(arrow => arrow.remove());
+
+            const nextMonthArrows = calendarContainer.querySelectorAll('.flatpickr-next-month');
+            nextMonthArrows.forEach(arrow => arrow.remove());
+          }, 0);
         }
       });
     }
