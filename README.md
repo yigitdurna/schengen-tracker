@@ -1,4 +1,4 @@
-# Schengen Tracker
+# Visa Days
 
 **[Live App](https://yigitdurna.github.io/schengen-tracker/)**
 

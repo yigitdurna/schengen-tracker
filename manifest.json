@@ -1,6 +1,6 @@
 {
-  "name": "Schengen Tracker",
-  "short_name": "Schengen",
+  "name": "Visa Days",
+  "short_name": "Visa Days",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f2f2f7",

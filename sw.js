@@ -1,4 +1,4 @@
-const CACHE_NAME = 'schengen-tracker-v3';
+const CACHE_NAME = 'visa-days-v4';
 const ASSETS = [
     './',
     './index.html',
