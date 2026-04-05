@@ -1,10 +1,14 @@
-const CACHE_NAME = 'visa-days-v4';
+const CACHE_NAME = 'visa-days-v5';
 const ASSETS = [
     './',
     './index.html',
     './icon.png',
-    './manifest.json'
-    // ❌ Removed CDN URLs - they should be fetched dynamically, not precached
+    './manifest.json',
+    './vendor/flatpickr.min.js',
+    './vendor/flatpickr.min.css',
+    './vendor/fonts.css',
+    './vendor/fonts/crimson-pro.woff2',
+    './vendor/fonts/dm-sans.woff2'
 ];
 
 self.addEventListener('install', (event) => {
