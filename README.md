@@ -1,6 +1,6 @@
 # Visa Days
 
-**[Live App](https://yigitdurna.github.io/schengen-tracker/)**
+**[Live App](https://yigitdurna.github.io/visa-days/)**
 
 A privacy-focused PWA to track your days in the Schengen area under the 90/180-day rule.
 
